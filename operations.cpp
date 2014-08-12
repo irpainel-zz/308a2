@@ -71,14 +71,16 @@ double calcAngle(G308_Point rotationAxis, G308_Point directionV)
 
 void rotateInZ(double angle, double matrix[4][4])
 {
+	angle = angle*(M_PI/180);
   matrix[0][0]=cos(angle); matrix[0][1]=-sin(angle); matrix[0][2]=0; matrix[0][3]=0;
-  matrix[1][0]=sin(angle); matrix[1][1]=cos(angle);  matrix[1][2]=0; matrix[1][3]=0;
+  matrix[1][0]=sin(angle); matrix[1][1]= cos(angle); matrix[1][2]=0; matrix[1][3]=0;
   matrix[2][0]=0;      	   matrix[2][1]=0;           matrix[2][2]=1; matrix[2][3]=0;
   matrix[3][0]=0;          matrix[3][1]=0;           matrix[3][2]=0; matrix[3][3]=1;
 }
 
 void rotateInY(double angle, double matrix[4][4])
 {
+	angle = angle*(M_PI/180);
   matrix[0][0]=cos(angle);  matrix[0][1]=0;       matrix[0][2]=sin(angle);   matrix[0][3]=0;
   matrix[1][0]=0;           matrix[1][1]=1;       matrix[1][2]=0;            matrix[1][3]=0;
   matrix[2][0]=-sin(angle); matrix[2][1]=0;       matrix[2][2]=cos(angle);   matrix[2][3]=0;
@@ -87,6 +89,7 @@ void rotateInY(double angle, double matrix[4][4])
 
 void rotateInX(double angle, double matrix[4][4])
 {
+	angle = angle*(M_PI/180);
   matrix[0][0]=1;       matrix[0][1]=0;           matrix[0][2]=0;           matrix[0][3]=0;
   matrix[1][0]=0;       matrix[1][1]=cos(angle);  matrix[1][2]=-sin(angle); matrix[1][3]=0;
   matrix[2][0]=0;       matrix[2][1]=sin(angle);  matrix[2][2]=cos(angle);  matrix[2][3]=0;
@@ -108,15 +111,30 @@ void multMatrix(double a[4][4], double b[4][4], double result[4][4])
 void castMatrix44to16(double a[4][4],double result[16])
 {
 	int k=0;
+	cout << "===========\n";
 	for (int i=0; i<4; i++)
 	{
 		for (int j=0; j<4; j++)
 		{
-			result[k] = a[i][j];
-			//cout << result[k] << "\n";
+			result[k] = a[j][i];
+			cout << result[k]<< " | ";
 			k++;
 		}
 	}
+	cout << "\n";
+}
+void printMatrix(double a[4][4])
+{
+	cout << "===========\n";
+	for (int i=0; i<4; i++)
+	{
+		for (int j=0; j<4; j++)
+		{
+			cout << " v: "<< a[i][j] << " ";
+		}
+		 cout << "\n";
+	}
+	cout << "===========\n";
 }
 
 

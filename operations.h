@@ -25,3 +25,5 @@ void rotateInX(double angle, double matrix[4][4]);
 void multMatrix(double a[4][4], double b[4][4], double result[4][4]);
 
 void castMatrix44to16(double a[4][4], double result[16]);
+
+void printMatrix(double a[4][4]);

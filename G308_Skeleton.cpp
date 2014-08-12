@@ -117,25 +117,31 @@ void Skeleton::drawBone(bone r, GLUquadric* q)
 	glColor3f(0, 1, 1);
 	gluSphere(q, 0.5, 10, 10);
 
-	//axis
-	//X-Axis
+
 
 	glPushMatrix();
 
-	glPushMatrix();
+
+
 	rotateInZ(r.rotz, RoZ);
-	rotateInY(r.rotx, RoY);
+	rotateInY(r.roty, RoY);
 	rotateInX(r.rotx, RoX);
 	multMatrix(RoZ, RoY, MatrixA);
 	multMatrix(MatrixA, RoX, MatrixB);
 	castMatrix44to16(MatrixB, test);
+	cout << r.name;
+	printMatrix(MatrixB);
 	glMultMatrixd(test);
 
 
 /*
 	glRotatef(r.rotz,0,0,1);
 	glRotatef(r.roty,0,1,0);
-	glRotatef(r.rotx,1,0,0);*/
+	glRotatef(r.rotx,1,0,0);
+*/
+	//axis
+	//X-Axis
+	glPushMatrix();
 	glRotated(90, 0, 1, 0);
 	glColor3f(1, 0, 0); //red
 	gluCylinder(q, axisDiam, axisDiam, axisLen, 10, 10);
