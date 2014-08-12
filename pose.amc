@@ -1,0 +1,33 @@
+#!OML:ASF H:\Terrain\Patient Classification 1\Walking\liu\liu.ASF
+:FULLY-SPECIFIED
+:DEGREES
+1
+root 7.46593 15.9937 -36.7321 7.11356 1.31487 -3.66776
+lowerback -4.29912 0.189404 0.939401
+upperback -1.51886 0.185188 2.55702
+thorax 0.845091 0.0960327 2.10705
+lowerneck -18.6579 -5.17414 -13.3376
+upperneck 13.6797 -6.63107 16.9236
+head 8.38994 -2.28192 7.17028
+rclavicle 6.33626e-015 1.59028e-014
+rhumerus -38.7688 17.4551 -84.1031
+rradius 56.1989
+rwrist -28.5696
+rhand -33.2015 -25.7513
+rfingers 7.12502
+rthumb -6.4087 -55.6344
+lclavicle 6.33626e-015 1.59028e-014
+lhumerus -35.9267 -2.97855 86.2544
+lradius 27.4056
+lwrist 7.30557
+lhand -13.3003 -23.0211
+lfingers 7.12502
+lthumb 12.8038 6.56624
+rfemur -9.89801 4.72659 30.1099
+rtibia 24.1198
+rfoot 0 0
+rtoes 0
+lfemur -40.6897 6.42258 -16.3516
+ltibia 43.9106
+lfoot -14.6186 8.34667
+ltoes -11.8487
