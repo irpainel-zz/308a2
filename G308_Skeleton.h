@@ -92,7 +92,8 @@ public:
 	~Skeleton();
 	void display(int);
 	void readAMC(char*);
-	void controlSkeleton(unsigned char key);
+	void nextFrame();
+	int getNumFrames();
 };
 
 #endif

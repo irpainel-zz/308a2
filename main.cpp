@@ -84,7 +84,8 @@ void processMainMenu(int option)
 		case A_FLOOR: toggleFloor = 1-toggleFloor; break;
 		case A_ROTL: th = -5; break;
 		case A_ROTR: th = 5; break;
-		case -1: break;
+		case A_NPOSE: skeleton->nextFrame(); break;
+		case A_SEPARATOR: break;
 		default: break;
 		}
 	}
@@ -100,16 +101,22 @@ void createPopupMenus(int args) {
 	//if amc is not loaded, animation controls don't appear
 	if (args>2)
 	{
+		if (skeleton->getNumFrames()>3)
+		{
 		glutAddMenuEntry("Rewind (z)", A_REWIND);
 		glutAddMenuEntry("Play (x)", A_PLAY);
-		glutAddMenuEntry("Pause (c)",A_PAUSE);
-		glutAddMenuEntry("Stop (v)",A_STOP);
+		glutAddMenuEntry("Pause (v)",A_PAUSE);
+		glutAddMenuEntry("Stop (c)",A_STOP);
 		glutAddMenuEntry("Fast Forward (b)", A_FFORWARD);
-		glutAddMenuEntry("------------", -1);
+		}
+		else {
+			glutAddMenuEntry("Next Pose (p)", A_NPOSE);
+		}
+		glutAddMenuEntry("------------", A_SEPARATOR);
 	}
 	glutAddMenuEntry("Toggle Axis (a)", A_AXIS);
 	glutAddMenuEntry("Toggle Floor (f)", A_FLOOR);
-	glutAddMenuEntry("------------", -1);
+	glutAddMenuEntry("------------", A_SEPARATOR);
 	glutAddMenuEntry("Rotate Left (q)", A_ROTL);
 	glutAddMenuEntry("Rotate Right (e)", A_ROTR);
 	// attach the menu to the right button
@@ -186,13 +193,15 @@ int main(int argc, char** argv) {
 
 	G308_init();
 	// [Assignment2] : Read ASF file
-	createPopupMenus(argc);
+
 	if (argc < 3)
 	{
 		skeleton = new Skeleton(argv[1], NULL);
 	}
 	else
 		skeleton = new Skeleton(argv[1], argv[2]);
+
+	createPopupMenus(argc);
 
 	glutMainLoop();
 
@@ -252,13 +261,15 @@ void G308_keyboardListener(unsigned char key, int x, int y) {
 	  case 'a': toggleAxes = 1-toggleAxes; break;
 	  case 'q': th = -5; break;
 	  case 'e': th = 5; break;
+	  case 'r': th = 5; break;
 	  case 'z': command = A_REWIND; break;
 	  case 'x': command = A_PLAY; break;
 	  case 'c': command = A_STOP; break;
 	  case 'v': command = A_PAUSE; break;
 	  case 'b': command = A_FFORWARD; break;
 	  case 'f': toggleFloor = 1-toggleFloor; break;
- 	  default: skeleton->controlSkeleton(key); break;
+	  case 'p': skeleton->nextFrame(); break;
+	  default: break;
 	  }
 	  glutPostRedisplay();
 }

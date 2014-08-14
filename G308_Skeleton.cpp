@@ -84,18 +84,17 @@ void Skeleton::deleteBones(bone* root) {
 	free(root);
 }
 
-void Skeleton::controlSkeleton(unsigned char key)
+int Skeleton::getNumFrames()
+{
+	return numFrames;
+}
+
+void Skeleton::nextFrame()
 {
 	if (numFrames>0)
 	{
-		switch (key)
-		{
-		 case 'p':
-			 actualFrame++;
-			 actualFrame = actualFrame % numFrames;
-			 //cout << actualFrame << " frame\n";
-			 break;
-		}
+	 actualFrame++;
+	 actualFrame = actualFrame % numFrames;
 	}
 }
 
@@ -217,9 +216,7 @@ void Skeleton::controlAnimation(int command)
 		}
 		actualFrame = actualFrame % numFrames;
 		if (actualFrame < 0){
-			cout << actualFrame << " | " << numFrames << " frames \n";
 			actualFrame = numFrames-1;
-			cout << actualFrame << " | " << numFrames << " frames \n";
 		}
 	}
 }
@@ -254,7 +251,7 @@ void Skeleton::display(bone* root, GLUquadric* q) {
 	}
 	if (numFrames==0)
 	{
-		glTranslated(0, 15, 0);
+		glTranslated(0, 16, 0);
 	}
 	else
 	{
