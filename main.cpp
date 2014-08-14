@@ -36,7 +36,6 @@ void G308_SetLight();
 
 Skeleton* skeleton;
 
-
 /*  Various global state */
 /*  Toggles */
 int toggleAxes = 0;   /* toggle axes on and off */
@@ -44,7 +43,13 @@ int toggleFloor = 0; /* toggle floor on and off */
 
 /*  Display view */
 int th = 0;  /* azimuth of view angle */
-int command=0; //Command animation
+int command=A_STOP; //Command animation
+
+// Pop up menu identifiers
+int mainMenu;
+
+// menu status
+int menuFlag = 0;
 
 
 void printAt(float x, float y, float z, std::string message)
@@ -55,6 +60,63 @@ void printAt(float x, float y, float z, std::string message)
   for (i = 0; i < len; i++) {
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, message[i]);
   }
+}
+
+void processMenuStatus(int status, int x, int y) {
+
+	if (status == GLUT_MENU_IN_USE)
+		menuFlag = 1;
+	else
+		menuFlag = 0;
+}
+
+void processMainMenu(int option)
+{
+	if ((option>=A_REWIND)&&(option<=A_FFORWARD))
+	{
+		command = option;
+	}
+	else
+	{
+		switch (option)
+		{
+		case A_AXIS: toggleAxes = 1-toggleAxes; break;
+		case A_FLOOR: toggleFloor = 1-toggleFloor; break;
+		case A_ROTL: th = -5; break;
+		case A_ROTR: th = 5; break;
+		case -1: break;
+		default: break;
+		}
+	}
+	glutPostRedisplay();
+}
+
+
+void createPopupMenus(int args) {
+
+
+	mainMenu = glutCreateMenu(processMainMenu);
+
+	//if amc is not loaded, animation controls don't appear
+	if (args>2)
+	{
+		glutAddMenuEntry("Rewind (z)", A_REWIND);
+		glutAddMenuEntry("Play (x)", A_PLAY);
+		glutAddMenuEntry("Pause (c)",A_PAUSE);
+		glutAddMenuEntry("Stop (v)",A_STOP);
+		glutAddMenuEntry("Fast Forward (b)", A_FFORWARD);
+		glutAddMenuEntry("------------", -1);
+	}
+	glutAddMenuEntry("Toggle Axis (a)", A_AXIS);
+	glutAddMenuEntry("Toggle Floor (f)", A_FLOOR);
+	glutAddMenuEntry("------------", -1);
+	glutAddMenuEntry("Rotate Left (q)", A_ROTL);
+	glutAddMenuEntry("Rotate Right (e)", A_ROTR);
+	// attach the menu to the right button
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+	// this will allow us to know if the menu is active
+	glutMenuStatusFunc(processMenuStatus);
 }
 
 
@@ -104,9 +166,6 @@ void drawFloor()
 	}
 }
 
-
-
-
 int main(int argc, char** argv) {
 	if (argc < 2 || argc > 3) {
 		//Usage instructions for core and challenge
@@ -126,8 +185,8 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(G308_Reshape);
 
 	G308_init();
-	cout << argc << "  args \n";
 	// [Assignment2] : Read ASF file
+	createPopupMenus(argc);
 	if (argc < 3)
 	{
 		skeleton = new Skeleton(argv[1], NULL);
@@ -185,18 +244,19 @@ void G308_display() {
 	glutSwapBuffers();
 }
 
+
 void G308_keyboardListener(unsigned char key, int x, int y) {
 	  /*  Exit on ESC */
 	  //printf("key:  %u \n", key);
 	  switch(key) {
 	  case 'a': toggleAxes = 1-toggleAxes; break;
-	  case 'q': th = 5; break;
-	  case 'e': th = -5; break;
-	  case 'z': command = 0; break;
-	  case 'x': command = 1; break;
-	  case 'c': command = 2; break;
-	  case 'v': command = 3; break;
-	  case 'b': command = 4; break;
+	  case 'q': th = -5; break;
+	  case 'e': th = 5; break;
+	  case 'z': command = A_REWIND; break;
+	  case 'x': command = A_PLAY; break;
+	  case 'c': command = A_STOP; break;
+	  case 'v': command = A_PAUSE; break;
+	  case 'b': command = A_FFORWARD; break;
 	  case 'f': toggleFloor = 1-toggleFloor; break;
  	  default: skeleton->controlSkeleton(key); break;
 	  }

@@ -88,16 +88,15 @@ void Skeleton::controlSkeleton(unsigned char key)
 {
 	if (numFrames>0)
 	{
-	switch (key)
-	{
-	 case 'p':
-		 actualFrame++;
-		 actualFrame = actualFrame % numFrames;
-		 //cout << actualFrame << " frame\n";
-		 break;
+		switch (key)
+		{
+		 case 'p':
+			 actualFrame++;
+			 actualFrame = actualFrame % numFrames;
+			 //cout << actualFrame << " frame\n";
+			 break;
+		}
 	}
-}
-
 }
 
 void Skeleton::drawBone(bone r, GLUquadric* q)
@@ -188,8 +187,6 @@ void Skeleton::readChildBones(bone *r, GLUquadric* q)
 	drawBone(*r, q);
 	if (r->numChildren > 0)
 	{
-		//cout << r->dof << " dof \n";
-
 		glTranslatef(r->dirx*r->length, r->diry*r->length, r->dirz*r->length);
 			for (i=0; i < r->numChildren; i++) {
 				readChildBones(r->children[i], q);
@@ -200,18 +197,30 @@ void Skeleton::readChildBones(bone *r, GLUquadric* q)
 
 void Skeleton::controlAnimation(int command)
 {
+/* Command values
+ * A_PLAY 1
+ * A_STOP 2
+ * A_PAUSE 3
+ * A_FFORWARD 4
+ * A_REWIND 0
+*/
 	if (numFrames>3)
 	{
 		switch (command)
 		{
-		case 0: actualFrame=0; break;
+		case 0: actualFrame--; break;
 		case 1: actualFrame++; break;
-		case 2: /*do nothing*/; break;
-		case 3: actualFrame+=2; break;
-		case 4: actualFrame--; break;
+		case 2: actualFrame=0; break;
+		case 3: /*do nothing*/; break;
+		case 4: actualFrame+=2; break;
 		default: break;
 		}
 		actualFrame = actualFrame % numFrames;
+		if (actualFrame < 0){
+			cout << actualFrame << " | " << numFrames << " frames \n";
+			actualFrame = numFrames-1;
+			cout << actualFrame << " | " << numFrames << " frames \n";
+		}
 	}
 }
 

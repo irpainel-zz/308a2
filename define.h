@@ -37,6 +37,17 @@
 // Define number of vertex 
 #define G308_NUM_VERTEX_PER_FACE 3 // Triangle = 3, Quad = 4 
 
+//Animation Control
+#define A_PLAY 1
+#define A_STOP 2
+#define A_PAUSE 3
+#define A_FFORWARD 4
+#define A_REWIND 0
+#define A_AXIS 5
+#define A_FLOOR 6
+#define A_ROTL 7
+#define A_ROTR 8
+
 #define PI 3.1415926535897932384626433
 
 // Define Basic Structures
