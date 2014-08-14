@@ -67,6 +67,8 @@ private:
 	bone* root;
 	vector<Frame> frames;
 	Frame * tempFrame;
+	int numFrames;
+	int actualFrame;
 	bool readASF(char*);
 	void readHeading(char*, FILE*);
 	void decomment(char*);
@@ -89,6 +91,7 @@ public:
 	~Skeleton();
 	void display();
 	void readAMC(char*);
+	void controlSkeleton(unsigned char key);
 };
 
 #endif

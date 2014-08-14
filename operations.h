@@ -27,3 +27,7 @@ void multMatrix(double a[4][4], double b[4][4], double result[4][4]);
 void castMatrix44to16(double a[4][4], double result[16]);
 
 void printMatrix(double a[4][4]);
+
+void rotationInXYZ(double ax, double ay, double az, double result[4][4]);
+
+void matrixTranspose(double input[4][4], double result[4][4]);

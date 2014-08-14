@@ -6,16 +6,6 @@
  */
 #include "operations.h"
 
-/* transpose matrix*/
-void mTranspose(double input[4][4], double result[4][4])
-{
-  int i, j;
-
-  for (i=0; i<4; i++)
-    for (j=0; j<4; j++)
-      result[i][j] = input[j][i];
-}
-
 
 G308_Point crossP(G308_Point u, G308_Point v){
 	G308_Point result;
@@ -108,20 +98,32 @@ void multMatrix(double a[4][4], double b[4][4], double result[4][4])
     }
 }
 
+void rotationInXYZ(double ax, double ay, double az, double result[4][4])
+{
+	double RoZ[4][4];
+	double RoY[4][4];
+	double RoX[4][4];
+	double MatrixA[4][4];
+	rotateInZ(az, RoZ);
+	rotateInY(ay, RoY);
+	rotateInX(ax, RoX);
+	multMatrix(RoZ, RoY, MatrixA);
+	multMatrix(MatrixA, RoX, result);
+}
 void castMatrix44to16(double a[4][4],double result[16])
 {
 	int k=0;
-	cout << "===========\n";
+	//cout << "===========\n";
 	for (int i=0; i<4; i++)
 	{
 		for (int j=0; j<4; j++)
 		{
 			result[k] = a[j][i];
-			cout << result[k]<< " | ";
+			//cout << result[k]<< " | ";
 			k++;
 		}
 	}
-	cout << "\n";
+	//cout << "\n";
 }
 void printMatrix(double a[4][4])
 {
@@ -137,4 +139,13 @@ void printMatrix(double a[4][4])
 	cout << "===========\n";
 }
 
+/* transpose matrix*/
+void matrixTranspose(double input[4][4], double result[4][4])
+{
+  int i, j;
+
+  for (i=0; i<4; i++)
+    for (j=0; j<4; j++)
+      result[i][j] = input[j][i];
+}
 

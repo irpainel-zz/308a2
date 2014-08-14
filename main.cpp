@@ -45,6 +45,7 @@ int toggleValues = 1; /* toggle values on and off */
 /*  Display view */
 int th = 0;  /* azimuth of view angle */
 int ph = 0;  /* elevation of view angle */
+int frame = 0;
 
 
 void printAt(float x, float y, float z, std::string message)
@@ -67,20 +68,22 @@ void drawAxes()
 {
   if (toggleAxes) {
     /*  Length of axes */
-    double len = 1.0;
-    glColor3f(1.0,1.0,1.0);
+    double len = 10000.0;
+    glColor3f(1.0,0.0,0.0);
     glBegin(GL_LINES);
-    glVertex3d(0,0,0);
+    glVertex3d(-len,0,0);
     glVertex3d(len,0,0);
-    glVertex3d(0,0,0);
+    glEnd();
+    glColor3f(0.0,1.0,0.0);
+    glBegin(GL_LINES);
+    glVertex3d(0,-len,0);
     glVertex3d(0,len,0);
-    glVertex3d(0,0,0);
+    glEnd();
+    glColor3f(0.0,0.0,1.0);
+    glBegin(GL_LINES);
+    glVertex3d(0,0,-len);
     glVertex3d(0,0,len);
     glEnd();
-    /*  Label axes */
-    printAt(len, 0, 0, "X");
-    printAt(0, len, 0, "Y");
-    printAt(0, 0, len, "Z");
   }
 }
 
@@ -95,7 +98,6 @@ void drawValues()
   message = "Angle (th, ph) = , )";
   if (toggleValues) {
     glColor3f(1.0,1.0,1.0);
-
     printAt(5, 5, 0, message);
   }
 }
@@ -188,9 +190,8 @@ void G308_keyboardListener(unsigned char key, int x, int y) {
 	  case 'a': toggleAxes = 1-toggleAxes; break;
 	  case 'q': th = 5; break;
 	  case 'e': th = -5; break;
+	  default: skeleton->controlSkeleton(key); break;
 	  }
-
-	  th %= 360;
 	  glutPostRedisplay();
 }
 
@@ -213,7 +214,7 @@ void G308_SetCamera() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(1.0, 1.0, 6.0,  0.0,   0.,   0.0,  0.0,  1.0,   0.0);
+	gluLookAt(3, 1.5, 7.0,  0.,   0.6,   0.,  0.0,  1.0,   0.0);
 }
 
 // Set View Position

@@ -29,6 +29,8 @@ Skeleton::Skeleton(char* filename, char * amcfilename) {
 	buffSize = 200;
 	maxBones = 60;
 	angle = 0;
+	actualFrame = 0;
+	numFrames = 0;
 	root = (bone*) malloc(sizeof(bone) * maxBones);
 
 	for (int i = 0; i < 60; i++) {
@@ -63,8 +65,7 @@ Skeleton::Skeleton(char* filename, char * amcfilename) {
 	root[0].dof = DOF_ROOT;
 	root[0].id = 0;
 	readASF(filename);
-	if (amcfilename != NULL)
-		readAMC(amcfilename);
+	readAMC(amcfilename);
 }
 
 Skeleton::~Skeleton() {
@@ -83,62 +84,46 @@ void Skeleton::deleteBones(bone* root) {
 	free(root);
 }
 
+void Skeleton::controlSkeleton(unsigned char key)
+{
+	switch (key)
+	{
+	 case 'p':
+		 if (numFrames>0)
+		 {
+			 actualFrame++;
+			 actualFrame = actualFrame % numFrames;
+			 cout << actualFrame << " frame\n";
+		 }
+		 break;
+	}
+
+}
+
 void Skeleton::drawBone(bone r, GLUquadric* q)
 {
 	double angle;
 	float axisDiam=0.1;
 	int axisLen = 2;
 	G308_Point boneDirTemp, rotationAxis, t, initialPosition;
-	double RoZ[4][4];
-	double RoY[4][4];
-	double RoX[4][4];
-	double MatrixA[4][4], MatrixB[4][4];
-	double test[16];
-
-
-	boneDirTemp.x = r.dirx;
-	boneDirTemp.y = r.diry;
-	boneDirTemp.z = r.dirz;
-
-	initialPosition.x = 0;
-	initialPosition.y = 0;
-	initialPosition.z = 0;
-
-	boneDirTemp = diffVec(boneDirTemp, initialPosition);
-
-	rotationAxis.x = 0;
-	rotationAxis.y = 0;
-	rotationAxis.z = 1;
-
-	t = crossP(rotationAxis, boneDirTemp);
-	angle = calcAngle(rotationAxis, boneDirTemp);
-
+	double matrixRotation[4][4], matrixRotationT[4][4], matrixPose[4][4];
+	double rotationVector[16];
 
 	glColor3f(0, 1, 1);
 	gluSphere(q, 0.5, 10, 10);
 
 
+	rotationInXYZ(r.rotx, r.roty, r.rotz, matrixRotation);
+	castMatrix44to16(matrixRotation, rotationVector);
+	//cout << r.name;
+	//printMatrix(matrixRotation);
+	glMultMatrixd(rotationVector);
 
-	glPushMatrix();
+	float * poseRot = frames[actualFrame].bonesPose[r.id].rot;
+		rotationInXYZ(poseRot[0], poseRot[1], poseRot[2], matrixPose);
+		castMatrix44to16(matrixPose, rotationVector);
+		glMultMatrixd(rotationVector);
 
-
-
-	rotateInZ(r.rotz, RoZ);
-	rotateInY(r.roty, RoY);
-	rotateInX(r.rotx, RoX);
-	multMatrix(RoZ, RoY, MatrixA);
-	multMatrix(MatrixA, RoX, MatrixB);
-	castMatrix44to16(MatrixB, test);
-	cout << r.name;
-	printMatrix(MatrixB);
-	glMultMatrixd(test);
-
-
-/*
-	glRotatef(r.rotz,0,0,1);
-	glRotatef(r.roty,0,1,0);
-	glRotatef(r.rotx,1,0,0);
-*/
 	//axis
 	//X-Axis
 	glPushMatrix();
@@ -164,11 +149,28 @@ void Skeleton::drawBone(bone r, GLUquadric* q)
 	glutSolidCone(axisDiam+0.08, 0.5 ,10 ,10);
 	glPopMatrix();
 
-
-	glPopMatrix();
-
+	matrixTranspose(matrixRotation, matrixRotationT);
+	castMatrix44to16(matrixRotationT, rotationVector);
+	glMultMatrixd(rotationVector);
 
 	glPushMatrix();
+
+	boneDirTemp.x = r.dirx;
+	boneDirTemp.y = r.diry;
+	boneDirTemp.z = r.dirz;
+
+	initialPosition.x = 0;
+	initialPosition.y = 0;
+	initialPosition.z = 0;
+
+	boneDirTemp = diffVec(boneDirTemp, initialPosition);
+
+	rotationAxis.x = 0;
+	rotationAxis.y = 0;
+	rotationAxis.z = 1;
+
+	t = crossP(rotationAxis, boneDirTemp);
+	angle = calcAngle(rotationAxis, boneDirTemp);
 	//rotate bone in t axis
 	glRotated(angle,t.x,t.y,t.z);
 		//bone
@@ -181,9 +183,6 @@ void Skeleton::drawBone(bone r, GLUquadric* q)
 void Skeleton::readChildBones(bone *r, GLUquadric* q)
 {
 	int i;
-	//printf ("Bone name: %s, position (%f, %f, %f) \n", r->name, r->dirx*r->length, r->diry*r->length, r->dirz*r->length);
-
-
 
 	glPushMatrix();
 	drawBone(*r, q);
@@ -220,21 +219,27 @@ void Skeleton::display() {
 	glPopMatrix();
 }
 
+
 // [Assignment2] you need to fill this function
 void Skeleton::display(bone* root, GLUquadric* q) {
 	if (root == NULL) {
 		return;
 	}
-	G308_Point rootPos;
+	float * rootTrans = frames[actualFrame].bonesPose[0].trans;
+	glTranslated(rootTrans[0], rootTrans[1], rootTrans[2]);
+
 	readChildBones(root, q);
-	//drawBone(root[1], q, rootPos);
 }
 
 
 void Skeleton::readAMC(char* filename) {
-	int numFrames = 0;
 	tempFrame = NULL;
-
+	if (filename == NULL)
+	{
+		tempFrame = new Frame(numBones, numFrames);
+		frames.push_back(*tempFrame);
+	}
+	else {
 	FILE* file = fopen(filename, "r");
 	if (file == NULL) {
 		printf("Failed to open file %s\n", filename);
@@ -274,9 +279,13 @@ void Skeleton::readAMC(char* filename) {
 
 	}
 
+	//reaches the document EOF, pushes last frame read
+	frames.push_back(*tempFrame);
+
 	delete[] buff;
 	fclose(file);
 	printf("Completed reading AMC file\n");
+	}
 }
 
 void Skeleton::readTransfBoneAMC(char * buff){
@@ -291,35 +300,30 @@ void Skeleton::readTransfBoneAMC(char * buff){
 	temp += strlen(t);
 	trim(&temp);
 
-	//cout << t << " -- bone name \n";
 
 	//look for bone id
 	boneId = getBoneId(t);
-	//cout << boneId << " -- bone id \n";
 
 	if (boneId != -1)
 	{
 		tempTransfBone = new Posebone();
 		tempTransfBone->boneid = boneId;
+
 		//read angles
 		if ((root[boneId].dof & DOF_ROOT) == DOF_ROOT)
 		{
+			for (i = 0; sscanf(temp, "%s", t) != 0 && i < 3; i++) {
+				tempTransfBone->trans[i] = atof(t);
+				temp += strlen(t);
+				trim(&temp);
+
+			}
 
 			for (i = 0; sscanf(temp, "%s", t) != 0 && i < 3; i++) {
 				tempTransfBone->rot[i] = atof(t);
 				temp += strlen(t);
 				trim(&temp);
-				//cout << tempTransfBone->rot[i] << " ";
 			}
-			//cout << "\n";
-
-			for (i = 0; sscanf(temp, "%s", t) != 0 && i < 3; i++) {
-				tempTransfBone->trans[i] = atof(t);
-				temp += strlen(t);
-				trim(&temp);
-				//cout << tempTransfBone->trans[i] << " ";
-			}
-			//cout << "\n";
 		}
 		else
 		{
@@ -353,8 +357,9 @@ int Skeleton::getBoneId(char * name)
 	int i = 0;
 	for (i = 0; i < numBones; i++)
 	{
-		if (strcmp(root[i].name, name) == 0)
+		if (strcmp(root[i].name, name) == 0){
 			return root[i].id;
+		}
 	}
 	return -1;
 }
