@@ -82,6 +82,7 @@ private:
 	int getBoneId(char * name);
 	void drawBone(bone r, GLUquadric* q);
 	void readChildBones(bone *r, GLUquadric* q);
+	void controlAnimation(int command);
 
 public:
 	int numBones;
@@ -89,7 +90,7 @@ public:
 	Skeleton(char*, char*);
 	//Skeleton(char*);
 	~Skeleton();
-	void display();
+	void display(int);
 	void readAMC(char*);
 	void controlSkeleton(unsigned char key);
 };

@@ -40,12 +40,11 @@ Skeleton* skeleton;
 /*  Various global state */
 /*  Toggles */
 int toggleAxes = 0;   /* toggle axes on and off */
-int toggleValues = 1; /* toggle values on and off */
+int toggleFloor = 0; /* toggle floor on and off */
 
 /*  Display view */
 int th = 0;  /* azimuth of view angle */
-int ph = 0;  /* elevation of view angle */
-int frame = 0;
+int command=0; //Command animation
 
 
 void printAt(float x, float y, float z, std::string message)
@@ -92,14 +91,17 @@ void drawAxes()
  *  ------
  *  Draw the values in the lower left corner
  */
-void drawValues()
+void drawFloor()
 {
-  std::string message;
-  message = "Angle (th, ph) = , )";
-  if (toggleValues) {
-    glColor3f(1.0,1.0,1.0);
-    printAt(5, 5, 0, message);
-  }
+	if (toggleFloor)
+	{
+		glPushMatrix();
+		glColor3d(0,0.2,0.2);
+		glTranslated(0, -0.05, 0);
+		glScalef(10, 0.1, 10);
+		glutSolidCube(1);
+		glPopMatrix();
+	}
 }
 
 
@@ -162,17 +164,16 @@ void G308_display() {
 	}
 
 	  /*  Set View Angle */
-	  //glRotated(ph,1,0,0);
 	  glRotated(th,0,1,0);
 	  th = 0;
 
 	  /*  Draw  */
 	  drawAxes();
-	  drawValues();
+	  drawFloor();
 
 	// [Assignmet2] : render skeleton
 	if (skeleton != NULL) {
-		skeleton->display();
+		skeleton->display(command);
 	}
 
 
@@ -180,6 +181,7 @@ void G308_display() {
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 
+	glutPostRedisplay();
 	glutSwapBuffers();
 }
 
@@ -190,7 +192,13 @@ void G308_keyboardListener(unsigned char key, int x, int y) {
 	  case 'a': toggleAxes = 1-toggleAxes; break;
 	  case 'q': th = 5; break;
 	  case 'e': th = -5; break;
-	  default: skeleton->controlSkeleton(key); break;
+	  case 'z': command = 0; break;
+	  case 'x': command = 1; break;
+	  case 'c': command = 2; break;
+	  case 'v': command = 3; break;
+	  case 'b': command = 4; break;
+	  case 'f': toggleFloor = 1-toggleFloor; break;
+ 	  default: skeleton->controlSkeleton(key); break;
 	  }
 	  glutPostRedisplay();
 }

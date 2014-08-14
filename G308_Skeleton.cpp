@@ -86,17 +86,17 @@ void Skeleton::deleteBones(bone* root) {
 
 void Skeleton::controlSkeleton(unsigned char key)
 {
+	if (numFrames>0)
+	{
 	switch (key)
 	{
 	 case 'p':
-		 if (numFrames>0)
-		 {
-			 actualFrame++;
-			 actualFrame = actualFrame % numFrames;
-			 cout << actualFrame << " frame\n";
-		 }
+		 actualFrame++;
+		 actualFrame = actualFrame % numFrames;
+		 //cout << actualFrame << " frame\n";
 		 break;
 	}
+}
 
 }
 
@@ -198,11 +198,29 @@ void Skeleton::readChildBones(bone *r, GLUquadric* q)
 	glPopMatrix();
 }
 
+void Skeleton::controlAnimation(int command)
+{
+	if (numFrames>3)
+	{
+		switch (command)
+		{
+		case 0: actualFrame=0; break;
+		case 1: actualFrame++; break;
+		case 2: /*do nothing*/; break;
+		case 3: actualFrame+=2; break;
+		case 4: actualFrame--; break;
+		default: break;
+		}
+		actualFrame = actualFrame % numFrames;
+	}
+}
+
 // [Assignment2] you may need to revise this function
-void Skeleton::display() {
+void Skeleton::display(int command) {
 	if (root == NULL) {
 		return;
 	}
+	controlAnimation(command);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glScalef(0.05, 0.05, 0.05);
@@ -225,8 +243,15 @@ void Skeleton::display(bone* root, GLUquadric* q) {
 	if (root == NULL) {
 		return;
 	}
-	float * rootTrans = frames[actualFrame].bonesPose[0].trans;
-	glTranslated(rootTrans[0], rootTrans[1], rootTrans[2]);
+	if (numFrames==0)
+	{
+		glTranslated(0, 15, 0);
+	}
+	else
+	{
+		float * rootTrans = frames[actualFrame].bonesPose[0].trans;
+		glTranslated(rootTrans[0], rootTrans[1], rootTrans[2]);
+	}
 
 	readChildBones(root, q);
 }
