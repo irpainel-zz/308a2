@@ -18,7 +18,7 @@ Run: ./Ass2 priman.asf
 
 Run: ./Ass2 priman.asf pose.amc
 
-#Challenge mode (Mocap Player)
+####Challenge mode (Mocap Player)
 
 Run: ./Ass2 priman.asf priman.amc (or desired amc file)
 
