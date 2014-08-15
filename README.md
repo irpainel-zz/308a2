@@ -1,4 +1,4 @@
-### Primitive Man - Assignment 2 - COMP 308
+# Primitive Man - Assignment 2 - COMP 308
 =====
 Author: Iury Roger Painelli
 Student ID: 300333846
@@ -6,7 +6,7 @@ Student ID: 300333846
 =====
 ## How to run:
 
-==>Core mode (show the primitive man)
+####Core mode (show the primitive man)
 
 make clean
 
@@ -14,7 +14,7 @@ make
 
 Run: ./Ass2 priman.asf
 
-#Extension mode (Poses)
+####Extension mode (Poses)
 
 Run: ./Ass2 priman.asf pose.amc
 
@@ -29,13 +29,13 @@ IMPORTANT: There is a menu attached with the right-button click to control diffe
 =====
 ## Controls:
 
-#Core mode
+####Core mode
 'q', 'e', and 'r' keys rotate the skeleton 
 
-#Extension mode
+####Extension mode
 'p' switch poses
 
-#Challenge mode
+####Challenge mode
 
 'z' is Rewind
 
@@ -50,7 +50,7 @@ IMPORTANT: There is a menu attached with the right-button click to control diffe
 
 =====
 ## What I did
-#Core part
+####Core part
 
 		The application reads the bones and the hierarchy.
 		
@@ -62,7 +62,7 @@ IMPORTANT: There is a menu attached with the right-button click to control diffe
 		
 		The math operations are in the operation.cpp file
 		
-#Extension part
+####Extension part
 
 		POSES: PUNCHING someone else's face, SITTING in a Stool, and WALKING.
 		
@@ -76,7 +76,7 @@ IMPORTANT: There is a menu attached with the right-button click to control diffe
 		
 		I set the poses inside the pose.amc file.
 		
-#Challenge part
+####Challenge part
 
 		The extension part helped a lot with the challenge part, so I just had to set an animation control, and solve some problems with the frames.
 		
