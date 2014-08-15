@@ -51,17 +51,6 @@ int mainMenu;
 // menu status
 int menuFlag = 0;
 
-
-void printAt(float x, float y, float z, std::string message)
-{
-  glRasterPos3f(x, y, z);
-  int len, i;
-  len = message.size();
-  for (i = 0; i < len; i++) {
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, message[i]);
-  }
-}
-
 void processMenuStatus(int status, int x, int y) {
 
 	if (status == GLUT_MENU_IN_USE)
@@ -195,9 +184,7 @@ int main(int argc, char** argv) {
 	// [Assignment2] : Read ASF file
 
 	if (argc < 3)
-	{
 		skeleton = new Skeleton(argv[1], NULL);
-	}
 	else
 		skeleton = new Skeleton(argv[1], argv[2]);
 
