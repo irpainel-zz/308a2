@@ -19,7 +19,6 @@ Run: ./Ass2 priman.asf priman.amc (or desired amc file)
 
 =====
 IMPORTANT: There is a menu attached with the right-button click to control different parts of the assignment.
-		   The menu changes according to the part of the assignment.
 
 =====
 ## Controls:
